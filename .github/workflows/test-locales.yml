@@ -1,0 +1,29 @@
+name: Test Locales
+
+on: workflow_dispatch  # Manual trigger, so you control when it runs
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install locales
+        run: |
+          sudo apt-get update
+          # sudo apt-get install -y locales language-pack-ja language-pack-zh-hans
+          sudo locale-gen en_US.UTF-8
+          sudo locale-gen zh_CN.UTF-8
+          sudo locale-gen ja_JP.UTF-8
+
+      - name: Verify locales
+        run: |
+          echo "=== Available locales ==="
+          locale -a | grep -E "ja_JP|zh_CN|en_US"
+          echo "=== Locale files ==="
+          ls /usr/share/i18n/locales/ | grep -E "ja_JP|zh_CN"
+          
+      - name: Test encoding
+        run: |
+          echo "Testing locale variables"
+          export LC_ALL=ja_JP.UTF-8
+          export LANG=ja_JP.UTF-8
+          locale
